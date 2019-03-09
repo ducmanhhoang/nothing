@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+		
+		<mvc:annotation-driven/>
+		<mvc:default-servlet-handler/>
+		
+		<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+			<property name="defaultLocale" value="vi"></property>
+		</bean>
+		<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang"></property>
+		</bean>
+		<mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/**"/>
+				<ref bean="localeChangeInterceptor"/>
+			</mvc:interceptor>
+		</mvc:interceptors>
+		
+		<context:component-scan base-package="com">
+			<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		</context:component-scan>
+		
+		<!-- Resolves views selected for rendering by @Controllers to JSP resources in the /WEB-INF/views directory -->
+		<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="prefix" value="/WEB-INF/views/"/>
+			<property name="suffix" value=".jsp"/>
+		</bean>
+		
+		<!-- 
+			You don't need it if that's where you put your resources. Everything at the root of your web application (WebContent), which isn't WEB-INF or META-INF is publicly available and the Servlet container can serve it to any client.
+			The <mvc:resources ... /> element is meant to serve resources which are within WEB-INF which is not available directly to clients. They must be served by your application.
+		 -->
+		<mvc:resources mapping="/resources/**" location="/resourcess/" />
+</beans>
